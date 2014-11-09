@@ -16,6 +16,7 @@
 
     Plugin.prototype = {
         init: function () {
+            $(this.element).text('2:00');
         }
     };
 
