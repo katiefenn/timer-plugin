@@ -16,7 +16,20 @@
 
     Plugin.prototype = {
         init: function () {
-            $(this.element).text('2:00');
+            $(this.element).text(formatTime(this.time));
+            $(this.element).on('click', {plugin: this},  function (event) {
+                event.data.plugin.start();
+            });
+        },
+        start: function () {
+            var plugin = this;
+            setInterval(function () {
+                plugin.tick();
+            }, 1000);
+        },
+        tick: function () {
+            this.time--;
+            $(this.element).text(formatTime(this.time))
         }
     };
 
