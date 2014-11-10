@@ -2,36 +2,51 @@
 
     var pluginName = "timer",
         defaults = {
-        propertyName: "value"
-    };
+            time: 120
+        };
 
     function Plugin ( element, options ) {
         this.element = element;
         this.options = $.extend( {}, defaults, options );
         this._defaults = defaults;
         this._name = pluginName;
-        this.time = 120;
+        this.time = this.options.time;
+        this.ticking = false;
         this.init();
     }
 
     Plugin.prototype = {
         init: function () {
             $(this.element).text(formatTime(this.time));
-            $(this.element).on('click', {plugin: this},  function (event) {
-                event.data.plugin.start();
+            $(this.element).on("click", {plugin: this},  function (event) {
+                if (event.data.plugin.ticking === false) {
+                    event.data.plugin.start();
+                } else {
+                    event.data.plugin.stop();
+                }
             });
         },
         start: function () {
+            this.ticking = true;
             var plugin = this;
-            setInterval(function () {
-                plugin.tick();
+            this.interval = setInterval(function () {
+                tick.call(plugin);
             }, 1000);
         },
-        tick: function () {
-            this.time--;
-            $(this.element).text(formatTime(this.time))
+        stop: function () {
+            this.ticking = false;
+            clearInterval(this.interval);   
         }
     };
+
+    function tick() {
+        if (this.time === 0) {
+            this.stop();
+        } else {
+            this.time--;
+        }
+        $(this.element).text(formatTime(this.time));
+    }
 
     function formatTime(time) {
         var minutes = Math.floor(time / 60),
@@ -41,8 +56,8 @@
             seconds = "0" + seconds.toString();
         }
 
-        return minutes + ':' + seconds;
-    };
+        return minutes + ":" + seconds;
+    }
 
     $.fn[ pluginName ] = function ( options ) {
         return this.each(function() {

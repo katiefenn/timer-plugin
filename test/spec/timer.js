@@ -6,25 +6,47 @@ describe('The timer widget', function () {
     
     it('should display a start time of 2:00 when invoked', function () {
         $element.timer();
-        expect($element.text()).toBe('2:00');
+        expect($element).toHaveText('2:00');
     });
 
-    describe('when the widget is clicked', function () {
+    it('should display a start time of 3:00 when invoked with a time option of 180', function () {
+        $element.timer({time: 180});
+        expect($element).toHaveText('3:00');    
+    });
+
+    describe('when clicked', function () {
         beforeEach(function () {
-            $element.timer();
+            $element.timer({time: 5});
             jasmine.clock().install();
             $element.click();
         });
 
         afterEach(function () {
+            $element.stop();
             jasmine.clock().uninstall();
         });
 
         it('should start counting down', function () {
             jasmine.clock().tick(1000);
-            expect($element.text()).toBe('1:59');
+            expect($element).toHaveText('0:04');
             jasmine.clock().tick(1000);
-            expect($element.text()).toBe('1:58');
+            expect($element).toHaveText('0:03');
         });
+        
+        it('should stop counting down when the timer reaches 0', function () {
+            jasmine.clock().tick(5000);
+            expect($element).toHaveText('0:00');
+            jasmine.clock().tick(1000);
+            expect($element).toHaveText('0:00');
+        });
+
+        it('should stop counting down when the timer is already running', function () {
+            jasmine.clock().tick(1000);
+            expect($element).toHaveText('0:04');
+            $element.click();
+            jasmine.clock().tick(1000);
+            expect($element).toHaveText('0:04');
+        });
+
     });
 });
