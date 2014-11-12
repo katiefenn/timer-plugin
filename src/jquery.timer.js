@@ -30,23 +30,23 @@
             this.ticking = true;
             var plugin = this;
             this.interval = setInterval(function () {
-                tick.call(plugin);
+                plugin.tick();
             }, 1000);
         },
         stop: function () {
             this.ticking = false;
             clearInterval(this.interval);   
+        },
+        tick: function () {
+            if (this.time === 0) {
+                this.stop();
+            } else {
+                this.time--;
+            }
+            $(this.element).text(formatTime(this.time));
         }
     };
 
-    function tick() {
-        if (this.time === 0) {
-            this.stop();
-        } else {
-            this.time--;
-        }
-        $(this.element).text(formatTime(this.time));
-    }
 
     function formatTime(time) {
         var minutes = Math.floor(time / 60),

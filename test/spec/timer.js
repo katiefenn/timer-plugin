@@ -1,3 +1,9 @@
+var path = '';
+if (typeof window.__karma__ !== 'undefined') {
+      path += 'base/'
+} 
+jasmine.getFixtures().fixturesPath = path + 'spec/javascripts/fixtures/';
+ 
 describe('The timer widget', function () {
     beforeEach(function () {
         loadFixtures('fixture.html');
@@ -14,15 +20,15 @@ describe('The timer widget', function () {
         expect($element).toHaveText('3:00');    
     });
 
-    describe('when clicked', function () {
+    describe('when started', function () {
         beforeEach(function () {
             $element.timer({time: 5});
             jasmine.clock().install();
-            $element.click();
+            $element.data('plugin_timer').start();
         });
 
         afterEach(function () {
-            $element.stop();
+            $element.data('plugin_timer').stop();
             jasmine.clock().uninstall();
         });
 
